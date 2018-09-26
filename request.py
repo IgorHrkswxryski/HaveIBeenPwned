@@ -23,7 +23,7 @@ def alerting():
     # Sending mail when detecting something, nothing otherwise
     SERVER = "localhost"
     FROM = "root@example.com"
-    TO = ["hmeziani2008@hotmail.fr"]
+    TO = ["test123testabc@yopmail.com"]
     SUBJECT = "Alert !"
     TEXT = "test"
 
