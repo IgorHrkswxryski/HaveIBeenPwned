@@ -15,11 +15,14 @@ def fill():
     # Fill table
     TrustedAccounts = [('1', 'test123testabc@yopmail.com'),
                 ('2', 'test123testabcd@yopmail.com'),
+                ('3', 'test123testabcde@yopmail.com'),
                ]
     TestedAccounts = [('1', 'test123@gmail.com'),
                 ('1', 'azerty@gmail.com'),
                 ('2', 'test123@gmail.com'),
                 ('2', 'azerty@gmail.com'),
+                ('3', 's12425djkfslkdjfvslkjdf@gmail.com'),
+                ('3', 'azerty@gmail.com'),
                ]
     c.executemany("INSERT INTO TrustedAccounts VALUES(?, ?)", TrustedAccounts)
     c.executemany("INSERT INTO TestedAccounts VALUES(?, ?)", TestedAccounts)

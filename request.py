@@ -8,18 +8,20 @@ def request(mail):
     # Testing mail on the HaveIBeenPwned API
     print("Testing : " + mail)
     url = ('https://haveibeenpwned.com/api/v2/breachedaccount/' +  mail)
-    print(url)
     r = requests.get(url)
-    results = r.json()
-    return(results)
+    if r.status_code == 200:
+        results = r.json()
+        return(results)
+    else:
+        return None
 
-def alerting(results, mail):
+def alerting(results, TrustedAccount, TestedAccount):
     # Sending mail when detecting something, nothing otherwise
     SERVER = "localhost"
     FROM = "root@example.com"
-    TO = ["test123testabc@yopmail.com"]
-    SUBJECT = "/!\\ Alert /!\\ Breach found on the following address: " + mail
-    TEXT = "If you receive this email, the account: " + mail + " has been potentially hacked. I suggest you to modify your password. Please, find bellow the site that has been hacked and where your account leaked: \n\n"
+    TO = TrustedAccount
+    SUBJECT = "/!\\ Alert /!\\ Breach found on the following address: " + TestedAccount
+    TEXT = "If you receive this email, the account: " + TestedAccount + " has been potentially hacked. I suggest you to modify your password. Please, find bellow the site that has been hacked and where your account leaked: \n\n"
     for result in results:
         TEXT += result["Name"]+": (Domain: "+result["Domain"]+")" " has been hacked in "+result["BreachDate"]+".\n"
 
@@ -29,7 +31,7 @@ def alerting(results, mail):
             Subject: %s
 
             %s
-            """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+            """ % (FROM, TO, SUBJECT, TEXT)
 
     server = smtplib.SMTP(SERVER)
     server.set_debuglevel(3)
@@ -40,8 +42,6 @@ def getTrustedAccounts():
     c = conn.cursor()
     c.execute("SELECT * FROM TrustedAccounts")
     rows = c.fetchall()
-    #for row in rows:
-    #    print(row)
     conn.close()
     return rows
 
@@ -50,8 +50,6 @@ def getTestedAccounts():
     c = conn.cursor()
     c.execute("SELECT * FROM TestedAccounts")
     rows = c.fetchall()
-    #for row in rows:
-    #    print(row)
     conn.close()
     return rows
 
@@ -61,12 +59,9 @@ if __name__ == "__main__":
     for TrustedAccount in TrustedAccounts:
         for TestedAccount in TestedAccounts:
             if TestedAccount[0] == TrustedAccount[0]:
-                print(TrustedAccount)
-                print(TestedAccount)
-    # Get Mails from mails.txt
-    #with open("mails.txt", "r") as f :
-    #    mails = f.read().splitlines()
-    #for mail in mails:
-    #    print(mail)
-    #    alert = request(mail)
-    #    alerting(alert, mail)
+                alert = request(TestedAccount[1])
+                if alert == None:
+                    print('No breach found for address: '+TestedAccount[1])
+                    continue
+                else:
+                    alerting(alert, TrustedAccount[1], TestedAccount[1])
