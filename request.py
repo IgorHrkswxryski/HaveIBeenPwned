@@ -2,6 +2,7 @@ import requests
 import smtplib
 from email.message import EmailMessage
 import json
+import sqlite3
 
 def request(mail):
     # Testing mail on the HaveIBeenPwned API
@@ -32,13 +33,40 @@ def alerting(results, mail):
 
     server = smtplib.SMTP(SERVER)
     server.set_debuglevel(3)
-    server.sendmail(FROM, TO, message)
-    quit()
+    #server.sendmail(FROM, TO, message)
+
+def getTrustedAccounts():
+    conn = sqlite3.connect("accounts.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM TrustedAccounts")
+    rows = c.fetchall()
+    #for row in rows:
+    #    print(row)
+    conn.close()
+    return rows
+
+def getTestedAccounts():
+    conn = sqlite3.connect("accounts.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM TestedAccounts")
+    rows = c.fetchall()
+    #for row in rows:
+    #    print(row)
+    conn.close()
+    return rows
 
 if __name__ == "__main__":
+    TrustedAccounts = getTrustedAccounts()
+    TestedAccounts = getTestedAccounts()
+    for TrustedAccount in TrustedAccounts:
+        for TestedAccount in TestedAccounts:
+            if TestedAccount[0] == TrustedAccount[0]:
+                print(TrustedAccount)
+                print(TestedAccount)
     # Get Mails from mails.txt
-    with open("mails.txt", "r") as f :
-        mails = f.read().splitlines()
-    for mail in mails:
-        alert = request(mail)
-        alerting(alert, mail)
+    #with open("mails.txt", "r") as f :
+    #    mails = f.read().splitlines()
+    #for mail in mails:
+    #    print(mail)
+    #    alert = request(mail)
+    #    alerting(alert, mail)
