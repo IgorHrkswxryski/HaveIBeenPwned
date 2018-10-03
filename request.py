@@ -35,7 +35,7 @@ def alerting(results, TrustedAccount, TestedAccount):
 
     server = smtplib.SMTP(SERVER)
     server.set_debuglevel(3)
-    #server.sendmail(FROM, TO, message)
+    server.sendmail(FROM, TO, message)
 
 def getTrustedAccounts():
     conn = sqlite3.connect("accounts.db")
