@@ -24,3 +24,6 @@ You have to tag each trusted account in TrustedAccounts table with an unique ID 
 
 # The results ?
 You will receive the results by mail on the addresses enter in the table TrustedAccounts (one mail by account tested).
+
+# TODO
+* Make a new table with status of the treated accounts
